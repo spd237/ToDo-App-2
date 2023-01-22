@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import Form from "./Components/Form";
 import Todo from "./Components/Todo";
@@ -13,9 +13,19 @@ const FILTER_MAP = {
 };
 const FILTER_NAMES = Object.keys(FILTER_MAP);
 
-function App() {
+export default function App() {
   const [todos, setTodos] = useState(data);
   const [filter, setFilter] = useState("All");
+
+  //saving todos in local storage
+  useEffect(() => {
+    const todo_data = window.localStorage.getItem("TODO_LIST");
+    if (todo_data !== null) setTodos(JSON.parse(todo_data));
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("TODO_LIST", JSON.stringify(todos));
+  }, [todos]);
 
   function addTask(name) {
     const newTodo = { id: `todo-${nanoid()}`, name: name, completed: false };
@@ -80,5 +90,3 @@ function App() {
     </main>
   );
 }
-
-export default App;
